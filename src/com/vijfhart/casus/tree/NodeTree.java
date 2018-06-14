@@ -12,7 +12,7 @@ import java.util.stream.*;
  * @version 1.0
  */
 
-public class NodeTree<T extends Node<T>> implements Tree<T>{
+public class NodeTree<T extends Node<T>> implements Tree<T>,Node<NodeTree> {
   
 
   private List<T> nodeList = new ArrayList<>();
