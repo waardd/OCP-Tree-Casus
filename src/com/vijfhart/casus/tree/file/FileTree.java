@@ -9,9 +9,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public abstract class FileTree<T extends Node<T>> implements Node<T>{
 
@@ -86,8 +88,27 @@ public abstract class FileTree<T extends Node<T>> implements Node<T>{
         String a = null;
         NodePath b = null;
         Path p1 = Paths.get(startDir);
-        Files.walk(p1)
-                .forEach(p->p=a)
-                .collect(Collectors.toMap(TreeMap.put(a,b)));
+//        Files.walk(p1)
+//
+//                List<String> list = paths
+//
+//                .filter(Files::isDirectory)
+//                .map(path -> Files.isDirectory(path) ? path.toString() + '/' : path.toString())
+//                .collect(Collectors.toList());
+//
+//                //.collect(Collectors.toMap(TreeMap.put(a,b)));
+
+        try (Stream<Path> paths = Files.walk(Paths.get(p1))) {
+            List<String> pathList = paths.map(p -> {
+                if (Files.isDirectory(p)) {
+                    return "\\" + p.toString();
+                }
+                return p.toString();
+            })
+                    .peek(System.out::println) // write all results in console for debug
+                    .collect(Collectors.toList());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
