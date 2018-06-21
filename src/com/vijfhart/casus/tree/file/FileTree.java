@@ -8,19 +8,16 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public abstract class FileTree<T extends Node<T>> implements Node<T>{
 
     NodeTree<T> tree = new NodeTree<>();
-
+    static String startDir;
     public void fileTree(String startDirectory){
-        String startDir=startDirectory;
+        startDir=startDirectory;
     }
 
     public void fillTree(String startDir) throws IOException {
@@ -88,25 +85,20 @@ public abstract class FileTree<T extends Node<T>> implements Node<T>{
         String a = null;
         NodePath b = null;
         Path p1 = Paths.get(startDir);
-//        Files.walk(p1)
-//
-//                List<String> list = paths
-//
-//                .filter(Files::isDirectory)
-//                .map(path -> Files.isDirectory(path) ? path.toString() + '/' : path.toString())
-//                .collect(Collectors.toList());
-//
-//                //.collect(Collectors.toMap(TreeMap.put(a,b)));
 
-        try (Stream<Path> paths = Files.walk(Paths.get(p1))) {
-            List<String> pathList = paths.map(p -> {
-                if (Files.isDirectory(p)) {
-                    return "\\" + p.toString();
+        Map<Path,PathNode> pathNodes = new HashMap<>();
+        try (Stream<Path> paths = Files.walk(Paths.get(startDir))) {
+            paths.map((Path p) -> {
+                if (Files.isRegularFile(p)) {
+                    Path filePath = p.getFileName();
+                    PathNode pathNode = new PathNode(p); //zet er wat properties op;
+                    pathNodes.put(filePath, pathNode);
                 }
-                return p.toString();
+                return null;
             })
+
                     .peek(System.out::println) // write all results in console for debug
-                    .collect(Collectors.toList());
+                    .collect(Collectors.toMap(pathNodes));
         } catch (IOException e) {
             e.printStackTrace();
         }
