@@ -86,6 +86,7 @@ public abstract class FileTree<T extends Node<T>> implements Node<T>{
         NodePath b = null;
         Path p1 = Paths.get(startDir);
 
+        // Vul de pathNodes met alle Path's en PathNodes
         Map<Path,PathNode> pathNodes = new HashMap<>();
         try (Stream<Path> paths = Files.walk(Paths.get(startDir))) {
             paths.map((Path p) -> {
@@ -96,11 +97,12 @@ public abstract class FileTree<T extends Node<T>> implements Node<T>{
                 }
                 return null;
             })
-
-                    .peek(System.out::println) // write all results in console for debug
-                    .collect(Collectors.toMap(pathNodes));
+                    .peek(System.out::println); // write all results in console for debug
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        // Walk trough the map and find parents
+        pathNodes.entrySet().stream().//weten we niet meer....
     }
 }
